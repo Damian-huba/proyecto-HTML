@@ -1,9 +1,9 @@
 <?php
 // Datos de conexión para InfinityFree
-$host = "sql105.infinityfree.com"; // Cambia "sqlXXX" por el Hostname exacto que te da InfinityFree en su panel
-$usuario = "if0_43322229";        // Tu nombre de usuario de la cuenta
-$password = "ddrg310500"; // La contraseña con la que inicias sesión en InfinityFree
-$database = "if0_43322229_comdepro_db"; // El nombre completo de tu base de datos (ej: si le pusiste sistema, será if0_43322229_sistema)
+$host = "sql105.infinityfree.com";
+$usuario = "if0_43322229";
+$password = "ddrg310500";
+$database = "if0_43322229_comdepro_db";
 
 $conexion = new mysqli($host, $usuario, $password, $database);
 
