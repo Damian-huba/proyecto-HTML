@@ -1,22 +1,16 @@
 <?php
-$host = "127.0.0.1";
-$user = "root";
-$password = "";
-$database = "comdepro_db";
-$port = 3306;
+// Datos de conexión para InfinityFree
+$host = "sql105.infinityfree.com"; // Cambia "sqlXXX" por el Hostname exacto que te da InfinityFree en su panel
+$usuario = "if0_43322229";        // Tu nombre de usuario de la cuenta
+$password = "ddrg310500"; // La contraseña con la que inicias sesión en InfinityFree
+$database = "if0_43322229_comdepro_db"; // El nombre completo de tu base de datos (ej: si le pusiste sistema, será if0_43322229_sistema)
 
-// Conexión pasando los parámetros por nombre para evitar errores de posición en PHP 8
-$conexion = new mysqli(
-    hostname: $host,
-    username: $user,
-    password: $password,
-    database: $database,
-    port: $port
-);
+$conexion = new mysqli($host, $usuario, $password, $database);
+
+// Asegurar codificación UTF-8 para que las tildes y eñes se guarden bien
+$conexion->set_charset("utf8");
 
 if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
+    die("Error de conexión a la base de datos: " . $conexion->connect_error);
 }
-
-$conexion->set_charset("utf8mb4");
 ?>
