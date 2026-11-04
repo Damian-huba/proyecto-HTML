@@ -61,14 +61,14 @@ $es_funcionario = isset($_SESSION['usuario']);
                 <div class="icon-box">🎯</div>
                 <h3>MISIÓN</h3>
                 <p>
-                    La Protección Integral de los Niños, Niñas, y Adolescentes que habitan en el Municipio San Francisco, a través de la actuación oportuna del sistema de Protección Integral, Municipal, como unidad primaria, para restablecer los Derechos que pueden ser vulnerados; articulando, la acción del Órgano de Protección, con los programas, servicios y políticas públicas, que puedan asegurar la preminencia del Interés Superior del niño, como prioridad absoluta, sin discriminación alguna y con calidad en la atención social, para así poder alcanzar el pleno ejercicio de sus Derechos y Garantías; activando así el principio de corresponsabilidad entre el Estado, la Familia y la Sociedad[cite: 2].
+                    La Protección Integral de los Niños, Niñas, y Adolescentes que habitan en el Municipio San Francisco, a través de la actuación oportuna del sistema de Protección Integral, Municipal, como unidad primaria, para restablecer los Derechos que pueden ser vulnerados; articulando, la acción del Órgano de Protección, con los programas, servicios y políticas públicas, que puedan asegurar la preminencia del Interés Superior del niño, como prioridad absoluta, sin discriminación alguna y con calidad en la atención social, para así poder alcanzar el pleno ejercicio de sus Derechos y Garantías; activando así el principio de corresponsabilidad entre el Estado, la Familia y la Sociedad.
                 </p>
             </div>
             <div class="about-card">
                 <div class="icon-box">👁️</div>
                 <h3>VISIÓN</h3>
                 <p>
-                    Establecer un sistema de protección del Niño, Niña y Adolescentes en el Municipio San Francisco, que garantice, proteja y defienda sus Derechos, con eficiencia, eficacia, celeridad y equidad, bajo el Marco Legal vigente en la materia, incorporando al Estado, la familia y la sociedad; a los fines de dar respuesta oportuna a las carencias y necesidades de la infancia y la adolescencia San Franciscana, que nos permita formar un ciudadano con ética, valores y principios, que se incorpore de manera progresiva a la vida y al desarrollo social de la localidad[cite: 2].
+                    Establecer un sistema de protección del Niño, Niña y Adolescentes en el Municipio San Francisco, que garantice, proteja y defienda sus Derechos, con eficiencia, eficacia, celeridad y equidad, bajo el Marco Legal vigente en la materia, incorporando al Estado, la familia y la sociedad; a los fines de dar respuesta oportuna a las carencias y necesidades de la infancia y la adolescencia San Franciscana, que nos permita formar un ciudadano con ética, valores y principios, que se incorpore de manera progresiva a la vida y al desarrollo social de la localidad.
                 </p>
             </div>
         </div>
