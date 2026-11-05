@@ -33,4 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conexion->close();
     exit();
 }
+    if ($stmt->execute()) {
+        header("Location: panel_funcionarios.php?exito=actualizado");
+    } else {
+        echo "Error al actualizar el caso: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conexion->close();
+    exit();
+}
 ?>
