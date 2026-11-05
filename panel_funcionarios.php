@@ -50,7 +50,7 @@ $casos = $conexion->query($query_casos);
         <form action="guardar_caso.php" method="POST" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
             <div>
                 <label>cedula:</label>
-                <input type="date" name="cedula" required style="width:100%; padding:8px; box-sizing:border-box;">
+                <input type="number" name="cedula" required style="width:100%; padding:8px; box-sizing:border-box;">
             </div>
             <div>
                 <label>Fecha:</label>
@@ -107,7 +107,7 @@ $casos = $conexion->query($query_casos);
             </tr>
             <?php endwhile; ?>
         <?php else: ?>
-            <tr><td colspan="6" style="padding:10px; text-align:center;">No hay casos registrados aún.</td></tr>
+            <tr><td colspan="7" style="padding:10px; text-align:center;">No hay casos registrados aún.</td></tr>
         <?php endif; ?>
     </table>
 
