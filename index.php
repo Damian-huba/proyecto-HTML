@@ -27,13 +27,14 @@ $es_funcionario = isset($_SESSION['usuario']);
         <a href="#inicio" style="text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem;">INICIO</a>
         <a href="#nosotros" style="text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem;">NOSOTROS</a>
         <a href="#servicios" style="text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem;">SERVICIOS</a>
+        <a href="#consulta-caso" style="text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem;">CONSULTAR CASO</a>
         <a href="#horarios" style="text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem;">HORARIOS</a>
         <a href="#organigrama" style="text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem;">ORGANIGRAMA</a>
         <a href="#publicaciones" style="text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem;">PUBLICACIONES</a>
         
         <?php if ($es_funcionario): ?>
-            <a href="logout.php" style="background: #004D4D; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
-                CERRAR SESIÓN (<?php echo htmlspecialchars($_SESSION['usuario']); ?>) 🔒
+            <a href="panel_funcionarios.php" style="background: #004D4D; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
+                PANEL DE CONTROL 🔒
             </a>
         <?php else: ?>
             <a href="login.html" style="background: #004D4D; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
@@ -48,6 +49,84 @@ $es_funcionario = isset($_SESSION['usuario']);
     <section id="inicio" class="hero container">
         <h1>Consejo Municipal de Derechos para la Protección del Niño, Niña y Adolescente</h1>
         <p>Garantizando el bienestar, protección y restitución de derechos en el Municipio San Francisco.</p>
+    </section>
+
+    <!-- CONSULTA PÚBLICA DE ESTATUS DE CASO -->
+    <section id="consulta-caso" class="container" style="margin: 40px auto; max-width: 750px;">
+        <div class="section-title">
+            <h2>Consulta el Estatus de tu Caso</h2>
+            <p>Ingresa el número de expediente para verificar la evolución del trámite</p>
+        </div>
+
+        <div style="background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 4px solid #008282;">
+            <form action="index.php#consulta-caso" method="GET" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display:block; font-weight:bold; font-size:0.85rem; margin-bottom:5px;">N° de Expediente (ID):</label>
+                    <input type="number" name="consultar_id" placeholder="Ej: 1" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+                </div>
+                <div style="margin-top: auto;">
+                    <button type="submit" style="background: #004D4D; color: #fff; border: none; padding: 11px 22px; border-radius: 6px; font-weight: bold; cursor: pointer;">🔍 Consultar Estatus</button>
+                </div>
+            </form>
+
+            <?php
+            if (isset($_GET['consultar_id']) && !empty($_GET['consultar_id'])) {
+                $id_pub = intval($_GET['consultar_id']);
+                
+                $sql_c = "SELECT iddistribuccion_de_caso_del_consejo_de_proteccion, fecha, estatud FROM distribuccion_de_caso_del_consejo_de_proteccion WHERE iddistribuccion_de_caso_del_consejo_de_proteccion = ?";
+                $stmt_c = $conexion->prepare($sql_c);
+                $stmt_c->bind_param("i", $id_pub);
+                $stmt_c->execute();
+                $res_c = $stmt_c->get_result();
+
+                if ($res_c->num_rows > 0) {
+                    $caso_pub = $res_c->fetch_assoc();
+                    
+                    $color_estatus = '#3B82F6';
+                    if ($caso_pub['estatud'] === 'Resuelto') $color_estatus = '#10B981';
+                    if ($caso_pub['estatud'] === 'Remitido') $color_estatus = '#F59E0B';
+                    ?>
+                    <div style="margin-top: 20px; padding: 15px; background: #F8F9FA; border-left: 4px solid <?php echo $color_estatus; ?>; border-radius: 6px;">
+                        <h4 style="margin-top: 0; color: #004D4D;">Expediente #<?php echo $caso_pub['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?></h4>
+                        <p><strong>Fecha de Apertura:</strong> <?php echo date("d/m/Y", strtotime($caso_pub['fecha'])); ?></p>
+                        <p><strong>Estatus del Trámite:</strong> 
+                            <span style="background: <?php echo $color_estatus; ?>; color: #fff; padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem;">
+                                <?php echo htmlspecialchars($caso_pub['estatud']); ?>
+                            </span>
+                        </p>
+
+                        <hr style="margin: 15px 0; border: 0; border-top: 1px dashed #ccc;">
+                        <h5 style="margin: 0 0 10px 0; color: #004D4D;">Evolución y Actuaciones Registradas</h5>
+                        <?php
+                        $sql_s_pub = "SELECT fecha_seguimiento, observacion FROM seguimiento_casos WHERE id_caso = ? ORDER BY fecha_seguimiento DESC";
+                        $stmt_s_pub = $conexion->prepare($sql_s_pub);
+                        $stmt_s_pub->bind_param("i", $id_pub);
+                        $stmt_s_pub->execute();
+                        $res_s_pub = $stmt_s_pub->get_result();
+
+                        if ($res_s_pub->num_rows > 0):
+                            while ($s_pub = $res_s_pub->fetch_assoc()):
+                        ?>
+                            <div style="padding: 8px 0; font-size: 0.88rem; border-bottom: 1px solid #e5e7eb;">
+                                <span style="color: #666; font-size: 0.8rem; font-weight: bold;">
+                                    📅 <?php echo date("d/m/Y h:i A", strtotime($s_pub['fecha_seguimiento'])); ?>:
+                                </span> 
+                                <br><?php echo nl2br(htmlspecialchars($s_pub['observacion'])); ?>
+                            </div>
+                        <?php 
+                            endwhile;
+                        else:
+                        ?>
+                            <p style="font-size: 0.85rem; color: #777; margin: 0;">No hay actuaciones públicas recientes en este expediente.</p>
+                        <?php endif; ?>
+                    </div>
+                    <?php
+                } else {
+                    echo "<p style='color:#DC2626; margin-top:15px; font-weight:bold; text-align:center;'>❌ No se encontró ningún expediente registrado con el N° $id_pub.</p>";
+                }
+            }
+            ?>
+        </div>
     </section>
 
     <!-- Sección Nosotros: Misión y Visión -->
@@ -252,7 +331,7 @@ $es_funcionario = isset($_SESSION['usuario']);
     </div>
 </footer>
 
-<script style="display:none;">
+<script>
 function mostrarEdicion(id) {
     document.getElementById('texto-' + id).style.display = 'none';
     document.getElementById('form-edit-' + id).style.display = 'block';
