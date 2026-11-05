@@ -20,15 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param("i", $id);
         
         if ($stmt->execute()) {
-            header("Location: panel.php?eliminado=1");
+            header("Location: panel_funcionarios.php?eliminado=1");
         } else {
             echo "Error al eliminar el caso: " . $stmt->error;
         }
         $stmt->close();
     } else {
         // Clave incorrecta: redirige o muestra un mensaje de error
-        echo "<script>alert('Clave especial incorrecta. No se pudo eliminar el caso.'); window.location.href='panel.php';</script>";
-    }
+        echo "<script>alert('Clave especial incorrecta. No se pudo eliminar el caso.'); window.location.href='panel_funcionarios.php';
 
     $conexion->close();
     exit();
