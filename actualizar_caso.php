@@ -20,19 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             WHERE iddistribuccion_de_caso_del_consejo_de_proteccion = ?";
             
     $stmt = $conexion->prepare($sql);
-    // Tipos: s (string), s (string), i (int), s (string), s (string), i (int)
     $stmt->bind_param("ssissi", $fecha, $nombre, $edad, $derecho, $estatud, $id);
     
-    if ($stmt->execute()) {
-        header("Location: panel_funcionarios.php?exito=actualizado");
-    } else {
-        echo "Error al actualizar el caso: " . $stmt->error;
-    }
-
-    $stmt->close();
-    $conexion->close();
-    exit();
-}
     if ($stmt->execute()) {
         header("Location: panel_funcionarios.php?exito=actualizado");
     } else {
