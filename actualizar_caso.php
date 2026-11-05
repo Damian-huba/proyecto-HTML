@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bind_param("ssissi", $fecha, $nombre, $edad, $derecho, $estatud, $id);
     
     if ($stmt->execute()) {
-        header("Location: panel.php?exito=actualizado");
+        header("Location: panel_funcionarios.php?exito=actualizado");
     } else {
         echo "Error al actualizar el caso: " . $stmt->error;
     }
