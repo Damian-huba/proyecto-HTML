@@ -47,6 +47,8 @@ $casos = $conexion->query($query_casos);
         .btn-editar:hover { background: #2563EB; }
         .btn-eliminar { background: #EF4444; color: #fff; border: none; cursor: pointer; }
         .btn-eliminar:hover { background: #DC2626; }
+        .btn-seguimiento { background: #10B981; color: #fff; border: none; cursor: pointer; }
+        .btn-seguimiento:hover { background: #059669; }
 
         /* Ventana Emergente (Modal) */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
@@ -54,7 +56,7 @@ $casos = $conexion->query($query_casos);
         .close-btn { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #666; }
         .modal-field { margin-bottom: 12px; }
         .modal-field label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.9rem; }
-        .modal-field input, .modal-field select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .modal-field input, .modal-field select, .modal-field textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
         .auth-badge { background-color: #FEF3C7; border: 1px solid #F59E0B; color: #92400E; padding: 8px; border-radius: 5px; font-size: 0.8rem; margin-bottom: 15px; }
     </style>
 </head>
@@ -65,7 +67,7 @@ $casos = $conexion->query($query_casos);
             <h2>Panel de Gestión de Casos</h2> 
             <p>
                 Bienvenido: <strong><?php echo htmlspecialchars($_SESSION['usuario']); ?></strong> | 
-                <a href="index.php" style="color: #004D4D; font-weight: bold; text-decoration: underline; margin-right: 10px;">🌐 IR A PUBLICAR EN EL MURO</a> | 
+                <a href="index.php" style="color: #004D4D; font-weight: bold; text-decoration: underline; margin-right: 10px;">🌐 IR AL SITIO WEB PRINCIPAL</a> | 
                 <a href="logout.php" style="color: #d9534f;">Cerrar Sesión</a>
             </p>
         </div>
@@ -94,7 +96,9 @@ $casos = $conexion->query($query_casos);
                 <p><strong>Derecho Violentado:</strong> <?php echo htmlspecialchars($caso_encontrado['derecho_violentado']); ?></p>
                 <p><strong>Estatus:</strong> <?php echo htmlspecialchars($caso_encontrado['estatud']); ?></p>
                 
-                <div style="margin-top: 12px; display: flex; gap: 10px;">
+                <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="abrirModalSeguimiento('<?php echo $caso_encontrado['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?>')" class="btn-accion btn-seguimiento">📋 Seguimiento</button>
+
                     <a href="#" onclick="abrirModalEditar(
                         '<?php echo $caso_encontrado['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?>',
                         '<?php echo $caso_encontrado['fecha']; ?>',
@@ -102,9 +106,35 @@ $casos = $conexion->query($query_casos);
                         '<?php echo $caso_encontrado['edad']; ?>',
                         '<?php echo htmlspecialchars($caso_encontrado['derecho_violentado'], ENT_QUOTES); ?>',
                         '<?php echo $caso_encontrado['estatud']; ?>'
-                    )" class="btn-accion btn-editar">✏️ Editar este Caso</a>
+                    )" class="btn-accion btn-editar">✏️ Editar</a>
 
-                    <button onclick="abrirModalEliminar('<?php echo $caso_encontrado['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?>')" class="btn-accion btn-eliminar">🗑️ Eliminar este Caso</button>
+                    <button onclick="abrirModalEliminar('<?php echo $caso_encontrado['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?>')" class="btn-accion btn-eliminar">🗑️ Eliminar</button>
+                </div>
+
+                <!-- HISTORIAL DE SEGUIMIENTO EN BÚSQUEDA -->
+                <div style="margin-top: 15px; background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #e5e7eb;">
+                    <h5 style="margin: 0 0 10px 0; color: #004D4D;">Historial de Actuaciones y Seguimiento</h5>
+                    <?php
+                    $sql_seg = "SELECT * FROM seguimiento_casos WHERE id_caso = ? ORDER BY fecha_seguimiento DESC";
+                    $stmt_seg = $conexion->prepare($sql_seg);
+                    $stmt_seg->bind_param("i", $caso_encontrado['iddistribuccion_de_caso_del_consejo_de_proteccion']);
+                    $stmt_seg->execute();
+                    $res_seg = $stmt_seg->get_result();
+
+                    if ($res_seg->num_rows > 0):
+                        while ($seg = $res_seg->fetch_assoc()):
+                    ?>
+                        <div style="border-bottom: 1px solid #f0f0f0; padding: 6px 0; font-size: 0.88rem;">
+                            <strong><?php echo date("d/m/Y h:i A", strtotime($seg['fecha_seguimiento'])); ?></strong> - 
+                            <span style="color:#008282; font-weight:bold;"><?php echo htmlspecialchars($seg['funcionario']); ?>:</span> 
+                            <?php echo nl2br(htmlspecialchars($seg['observacion'])); ?>
+                        </div>
+                    <?php 
+                        endwhile;
+                    else:
+                    ?>
+                        <p style="font-size: 0.85rem; color: #777; margin: 0;">No hay actuaciones registradas en este expediente.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endif; ?>
@@ -165,7 +195,9 @@ $casos = $conexion->query($query_casos);
                 <td style="padding:8px;"><?php echo $row['edad']; ?></td>
                 <td style="padding:8px;"><?php echo htmlspecialchars($row['derecho_violentado']); ?></td>
                 <td style="padding:8px;"><?php echo htmlspecialchars($row['estatud']); ?></td>
-                <td style="padding:8px; text-align:center;">
+                <td style="padding:8px; text-align:center; display:flex; gap:5px; justify-content:center; align-items:center;">
+                    <button onclick="abrirModalSeguimiento('<?php echo $row['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?>')" class="btn-accion btn-seguimiento">Seguimiento</button>
+
                     <a href="#" onclick="abrirModalEditar(
                         '<?php echo $row['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?>',
                         '<?php echo $row['fecha']; ?>',
@@ -210,6 +242,23 @@ $casos = $conexion->query($query_casos);
                 </div>
                 <br>
                 <button type="submit" class="btn-auth" style="width:100%;">Autorizar y Registrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRAR SEGUIMIENTO -->
+    <div id="modalSeguimiento" class="modal">
+        <div class="modal-content" style="width: 420px;">
+            <span class="close-btn" onclick="cerrarModalSeguimiento()">&times;</span>
+            <h3 style="margin-top:0; color:#004D4D;">Agregar Actuación de Seguimiento</h3>
+            <form action="guardar_seguimiento.php" method="POST">
+                <input type="hidden" name="id_caso" id="seg_id_caso">
+                <div class="modal-field">
+                    <label>Observaciones / Actuación:</label>
+                    <textarea name="observacion" rows="4" placeholder="Escriba el informe de la visita, cita o avance del caso..." required></textarea>
+                </div>
+                <br>
+                <button type="submit" class="btn-auth" style="width:100%; background:#10B981;">Guardar Actuación</button>
             </form>
         </div>
     </div>
@@ -276,6 +325,13 @@ $casos = $conexion->query($query_casos);
     function abrirModalFuncionario() { document.getElementById('modalFuncionario').style.display = 'block'; }
     function cerrarModalFuncionario() { document.getElementById('modalFuncionario').style.display = 'none'; }
 
+    // Funciones Modal Seguimiento
+    function abrirModalSeguimiento(id) {
+        document.getElementById('seg_id_caso').value = id;
+        document.getElementById('modalSeguimiento').style.display = 'block';
+    }
+    function cerrarModalSeguimiento() { document.getElementById('modalSeguimiento').style.display = 'none'; }
+
     // Funciones Modal Editar
     function abrirModalEditar(id, fecha, nombre, edad, derecho, estatud) {
         document.getElementById('edit_id').value = id;
@@ -298,6 +354,7 @@ $casos = $conexion->query($query_casos);
     // Cerrar modales haciendo clic fuera del contenido
     window.onclick = function(event) {
         if (event.target == document.getElementById('modalFuncionario')) cerrarModalFuncionario();
+        if (event.target == document.getElementById('modalSeguimiento')) cerrarModalSeguimiento();
         if (event.target == document.getElementById('modalEditar')) cerrarModalEditar();
         if (event.target == document.getElementById('modalEliminar')) cerrarModalEliminar();
     }
