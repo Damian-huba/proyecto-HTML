@@ -6,22 +6,37 @@ if (!isset($_SESSION['usuario'])) {
 }
 require 'conexion.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $fecha = $_POST['cedula'];
-    $fecha = $_POST['fecha'];
-    $nombre = $_POST['nombre_completo_del_nin_o'];
-    $edad = $_POST['edad'];
-    $derecho = $_POST['derecho_violentado'];
-    $estatus = $_POST['estatud'];
+// Validar que los datos vengan por POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // 1. Recoger los datos del formulario (incluyendo la cédula que faltaba)
+    $cedula                    = $_POST['cedula'];
+    $fecha                     = $_POST['fecha'];
+    $nombre_completo_del_nin_o = $_POST['nombre_completo_del_nin_o'];
+    $edad                      = $_POST['edad'];
+    $derecho_violentado        = $_POST['derecho_violentado'];
+    $estatud                   = $_POST['estatud'];
 
-    $sql = "INSERT INTO distribuccion_de_caso_del_consejo_de_proteccion (cedula,fecha, nombre_completo_del_nin_o, edad, derecho_violentado, estatud) VALUES (?, ?, ?, ?, ?)";
+    // 2. Preparar la consulta SQL de inserción (Asegúrate de que los nombres de las columnas 
+    // coincidan exactamente con los de tu base de datos MySQL)
+    $sql = "INSERT INTO distribuccion_de_caso_del_consejo_de_proteccion 
+            (cedula, fecha, nombre_completo_del_nin_o, edad, derecho_violentado, estatud) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+
     $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("ssiss", $fecha, $nombre, $edad, $derecho, $estatus);
+    
+    // Si usas tipos de datos: s = string, i = integer
+    // Ejemplo: cedula (string), fecha (string), nombre (string), edad (int), derecho (string), estatud (string)
+    $stmt->bind_param("sssiss", $cedula, $fecha, $nombre_completo_del_nin_o, $edad, $derecho_violentado, $estatud);
 
     if ($stmt->execute()) {
-        header("Location: panel_funcionarios.php");
+        // Redirigir de vuelta al panel con éxito
+        header("Location: panel.php?exito=1");
+        exit();
     } else {
-        echo "Error al registrar el caso: " . $conexion->error;
+        echo "Error al guardar el caso: " . $stmt->error;
     }
+
+    $stmt->close();
+    $conexion->close();
 }
 ?>
