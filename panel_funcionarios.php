@@ -49,10 +49,6 @@ $casos = $conexion->query($query_casos);
         <h3>Registrar Nuevo Caso</h3>
         <form action="guardar_caso.php" method="POST" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
             <div>
-                <label>cedula:</label>
-                <input type="number" name="cedula" required style="width:100%; padding:8px; box-sizing:border-box;">
-            </div>
-            <div>
                 <label>Fecha:</label>
                 <input type="date" name="fecha" required style="width:100%; padding:8px; box-sizing:border-box;">
             </div>
@@ -87,7 +83,6 @@ $casos = $conexion->query($query_casos);
     <table border="1" style="width:100%; border-collapse: collapse; text-align:left; background:#fff;">
         <tr style="background:#008282; color:#fff;">
             <th style="padding:10px;">ID</th>
-             <th style="padding:10px;">cedula</th>
             <th style="padding:10px;">Fecha</th>
             <th style="padding:10px;">Nombre del Niño/A</th>
             <th style="padding:10px;">Edad</th>
@@ -98,7 +93,6 @@ $casos = $conexion->query($query_casos);
             <?php while($row = $casos->fetch_assoc()): ?>
             <tr>
                 <td style="padding:8px;"><?php echo $row['iddistribuccion_de_caso_del_consejo_de_proteccion']; ?></td>
-                <td style="padding:8px;"><?php echo $row['cedula']; ?></td>
                 <td style="padding:8px;"><?php echo $row['fecha']; ?></td>
                 <td style="padding:8px;"><?php echo htmlspecialchars($row['nombre_completo_del_nin_o']); ?></td>
                 <td style="padding:8px;"><?php echo $row['edad']; ?></td>
@@ -107,7 +101,7 @@ $casos = $conexion->query($query_casos);
             </tr>
             <?php endwhile; ?>
         <?php else: ?>
-            <tr><td colspan="7" style="padding:10px; text-align:center;">No hay casos registrados aún.</td></tr>
+            <tr><td colspan="6" style="padding:10px; text-align:center;">No hay casos registrados aún.</td></tr>
         <?php endif; ?>
     </table>
 
