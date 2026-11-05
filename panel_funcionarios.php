@@ -75,7 +75,7 @@ $casos = $conexion->query($query_casos);
     <!-- SECCIÓN: BUSCAR CASO POR ID -->
     <div style="background:#fff; padding:20px; border-radius:8px; margin-bottom:30px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
         <h3>Buscar Caso por ID</h3>
-        <form method="GET" action="panel.php" style="display: flex; gap: 10px; max-width: 400px; margin-top: 10px;">
+        <form method="GET" action="panel_funcionarios.php" style="display: flex; gap: 10px; max-width: 400px; margin-top: 10px;">
             <input type="number" name="buscar_id" placeholder="Ingrese el ID del caso..." required style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
             <button type="submit" style="background:#004D4D; color:#fff; border:none; padding: 8px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">Buscar</button>
         </form>
